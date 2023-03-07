@@ -231,3 +231,17 @@ $ git commit -m "remove test.md"
 推送成功之后，如果我们本地进行了提交，只需用 `git push origin master` 推送至 GitHub 即可。
 
 如果要删除远程库，可以先用 `git remote -v` 查看远程库的信息，然后再用 `git remote rm origin` 删除。
+
+## 分支管理
+
+### 创建与合并分支
+
+创建分支 dev ：`git branch dev`
+
+切换到分支 dev ：`git checkout dev`
+
+二者可以合并成一条指令： `git checkout -b dev`
+
+其中 `-b` 参数表示创建。
+
+然后，可以使用 `git branch` 查看当前所有分支。
