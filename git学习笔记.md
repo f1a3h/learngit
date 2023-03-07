@@ -238,10 +238,60 @@ $ git commit -m "remove test.md"
 
 创建分支 dev ：`git branch dev`
 
-切换到分支 dev ：`git checkout dev`
+切换到分支 dev ：`git checkout dev` 或 `git switch dev`
 
-二者可以合并成一条指令： `git checkout -b dev`
+二者可以合并成一条指令： `git checkout -b dev` 或 `git switch -c dev`
 
-其中 `-b` 参数表示创建。
+其中 `-b` 或 `-c` 参数表示创建。
 
 然后，可以使用 `git branch` 查看当前所有分支。
+
+合并某分支到当前分支：`git merge <name>`
+
+删除分支：`git branch -d <name>`
+
+### 解决冲突
+
+当 git 无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+
+用 `git log --graph` 命令可以看到分支合并图。
+
+### 分支管理策略
+
+实际开发中，我们平时应该在分支上干活，知道要发布一个稳定的新版本时再合并到 master 上。
+
+合并分支时，加上 `--no-ff` 参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而 `fast forward` 合并就看不出来曾经做过合并。
+
+### bug 分支
+
+修复 bug 时，我们会通过创建新的 bug 分支进行修复，然后合并，最后删除。
+
+当手头工作没有完成时，先把工作现场 `git stash` 一下，然后去修复 bug ，修复后，再 `git stash pop` 或者 `git stash apply` ，回到工作现场，但是 `git stash apply` 指令不会删除 `git stash list` 中的记录，需要再用 `git stash drop` 删除。我们也可以多次 `git stash` ，恢复的时候先用 `git stash list` 查看，然后用 `git stash apply stash@{0}` 来恢复指定的记录。
+
+在 master 分支上修复的 bug ，想要合并到当前 dev 分支，可以用 `git cherry-pick <commit>` 命令，把 bug 提交的修改“复制”到当前分支，避免重复劳动，其中 `<commit>` 是在 master 分支上修复后 commit 的代号。
+
+### Feature 分支
+
+开发一个新 feature ，最好新建一个分支。
+
+如果要丢弃一个没有被合并过的分支，可以通过 `git branch -D <name>` 强行删除。
+
+### 多人协作
+
+查看远程库信息，使用 `git remote -v` 。
+
+本地新建的分支如果不推送到远程，对其他人就是不可见的。
+
+从本地推送分支，使用 `git push origin branch-name` ，如果推送失败，先用 `git pull` 抓取远程的新提交。
+
+在本地创建和远程分支对应的分支，使用 `git checkout -b branch-name origin/branch-name `，本地和远程分支的名称最好一致。
+
+建立本地分支和远程分支的关联，使用 `git branch --set-upstream branch-name origin/branch-name` 。
+
+从远程抓取分支，使用 `git pull` ，如果有冲突，要先处理冲突。
+
+### Rebase
+
+`git rebase` 操作可以把本地未 push 的分叉提交历史整理成直线。
+
+rebase 的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
